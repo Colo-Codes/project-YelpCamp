@@ -1,2 +1,2 @@
 # Project: YelpCamp
-A JavaScript, Node.js, MongoDB prohect about camping sites
+A JavaScript, Node.js, MongoDB project about camping sites.
