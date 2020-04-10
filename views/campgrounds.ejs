@@ -1,0 +1,14 @@
+<h1>~ This is the Campgrounds page ~</h1>
+<p>Welcome to YelpCamp - Campgrounds</p>
+<p><a href="/">Go back to landing page</a></p>
+
+
+
+<ul>
+<% campgroundsPage.forEach((campsite) => { %>
+    <div>
+        <h4><%= campsite.name %></h4>
+        <img src="<%= campsite.image %>" alt="" width="400">
+    </div>
+<% }); %>
+</ul>
