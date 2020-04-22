@@ -1,18 +1,29 @@
 <%- include("partials/header") %>
 
-<h1>~ This is the Campgrounds page ~</h1>
-<p>Welcome to YelpCamp - Campgrounds</p>
-<p><a href="/">Go back to landing page</a></p>
-<p><a href="/campgrounds/new">Add a new Campground!</a></p>
+<div class="container mt-3">
+    <header class="jumbotron">
+        <div class="container">
+            <h1>~ Welcome to YelpCamp ~</h1>
+            <p>View our hand-picked camps from all over the world</p>
+            <p><a class="btn btn-primary btn-lg" href="/campgrounds/new">Add a new Campground!</a></p>
+        </div>
+    </header>
 
-
-<ul>
-<% campgroundsPage.forEach((campsite) => { %>
-    <div>
-        <h4><%= campsite.name %></h4>
-        <img src="<%= campsite.image %>" alt="" width="400">
+    <p>Welcome to YelpCamp - Campgrounds</p>
+    <p><a href="/">Go back to landing page</a></p>
+    
+    <div class="row text-center" style="display:flex; flex-wrap:wrap;">
+            <% campgroundsPage.forEach((campsite) => { %>
+                <div class="col-md-3 col-sm-6"> <!-- How many columns the element is going to take -->
+                    <div class="card mb-3">
+                        <img src="<%= campsite.image %>" alt="" class="card-img-top p-1">
+                        <div class="card-body">
+                            <h6><%= campsite.name %></h6>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
     </div>
-<% }); %>
-</ul>
+</div>
 
 <%- include("partials/footer") %>
