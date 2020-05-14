@@ -5,7 +5,13 @@ const mongoose = require('mongoose');
 const campgroundSchema = new mongoose.Schema({
     name: String,
     image: String,
-    description: String
+    description: String,
+    comments: [
+        {
+            type: mongoose.Schema.Types.ObjectId, // Referencing data
+            ref: 'Comment'
+        }
+    ]
 });
 
 module.exports = mongoose.model("Campground", campgroundSchema);

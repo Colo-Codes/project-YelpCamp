@@ -50,7 +50,6 @@ function seedDB(){
                                 campground.comments.push(comment);
                                 campground.save();
                                 console.log('Comment added to campground.');
-                                
                             }
                         });
                 }
