@@ -50,6 +50,20 @@ function seedDB(){
                                 campground.comments.push(comment);
                                 campground.save();
                                 console.log('Comment added to campground.');
+                                //Add another comment. This is optional and could be handled in a better way.
+                                Comment.create(
+                                    {
+                                        text: "This place is great, shut up Homer!",
+                                        author: "Bart"
+                                    }, (err, comment) => {
+                                        if(err){
+                                            console.log(err);
+                                        } else {
+                                            campground.comments.push(comment);
+                                            campground.save();
+                                            console.log('Comment added to campground.');
+                                        }
+                                    });
                             }
                         });
                 }

@@ -3,9 +3,15 @@
 <div class="container">
     <h1 class="text-center">Show a Campground</h1>
     
-    <p><%= campground.name %></p>
+    <h1><%= campground.name %></h1>
     <p><img src="<%= campground.image%>" alt=""></p>
     <p><%= campground.description %></p>
+    <h4>Comments:</h4>
+    <% campground.comments.forEach((comment) => { %>
+        <p>
+            <strong><%= comment.author %></strong> - <%= comment.text %>
+        </p>
+    <% }) %>
     <p><a href="/campgrounds">Go back to Campgrounds list...</a></p>
 </div>
 
