@@ -3,7 +3,11 @@ const express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    Campground = require('./models/campground');
+    Campground = require('./models/campground'),
+    seedDB = require('./seeds');
+
+// Seeding the DB
+seedDB();
 
 // Connecting to mongodb DB through mongoose
 mongoose.connect('mongodb://localhost/yelp_camp_db');
