@@ -1,8 +1,9 @@
 // Initializing express and importing packages
-const   express     = require('express'),
-        app         = express(),
-        bodyParser  = require('body-parser'),
-        mongoose    = require('mongoose');
+const express = require('express'),
+    app = express(),
+    bodyParser = require('body-parser'),
+    mongoose = require('mongoose'),
+    Campground = require('./models/campground');
 
 // Connecting to mongodb DB through mongoose
 mongoose.connect('mongodb://localhost/yelp_camp_db');
@@ -10,14 +11,6 @@ mongoose.connect('mongodb://localhost/yelp_camp_db');
 app.use(bodyParser.urlencoded({extended: true}));
 // Use "ejs" as view engine (so you don't have to write ".ejs" for file extensions):
 app.set('view engine', 'ejs');
-
-// Setting up the schema for mongoose and mongodb
-const campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-const Campground = mongoose.model("Campground", campgroundSchema);
 
 // Adding a campground to the db
 // Campground.create(
