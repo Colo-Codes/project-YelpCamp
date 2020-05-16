@@ -30,7 +30,7 @@ app.get('/campgrounds', (req, res) => { // Using RESTful convention
                 console.log('Error! ' + err);
             } else {
                 console.log('Found campgrounds! ' + campgrounds);
-                res.render('index', {campgroundsPage:campgrounds});
+                res.render('campgrounds/index', {campgroundsPage:campgrounds});
             }
     });
 
@@ -40,7 +40,7 @@ app.get('/campgrounds', (req, res) => { // Using RESTful convention
 // ***** RESTful: NEW route (GET, show creation form)
 app.get('/campgrounds/new', (req, res) => { // Using RESTful convention
     // res.send('Create a new camp!');
-    res.render('newcampground');
+    res.render('campgrounds/new');
 });
 // ***** RESTful: CREATE route (POST, create an item)
 app.post('/campgrounds', (req, res) => { // Using RESTful convention
@@ -70,11 +70,26 @@ app.get('/campgrounds/:id', (req, res) => { // Using RESTful convention
         } else {
             console.log(foundCampground); // REMEMBER: if there is only one comment, it will display only the ID, but is actually working OK.
             // Render the SHOW template with a campground
-            res.render('show', {campground: foundCampground});
+            res.render('campgrounds/show', {campground: foundCampground});
+        }
+    });
+});
+// Nested Routes (start) +++++++++++++++++
+// ***** RESTful nested route: NEW route (GET, show item by id)
+app.get('/campgrounds/:id/comments/new', (req, res) => {
+    // res.send('This will be the Comments form.');
+    Campground.findById(req.params.id, (err, campground) => {
+        if(err) {
+            console.log('ERROR: ' + err);
+        } else {
+            res.render('comments/new', {campground: campground});
         }
     });
 });
 
+// ***** RESTful nested route: CREATE route (GET, show item by id)
+
+// Nested Routes (end) +++++++++++++++++
 // Routes (end) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Running Node.js server
