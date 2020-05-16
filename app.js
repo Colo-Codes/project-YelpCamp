@@ -4,6 +4,7 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     Campground = require('./models/campground'),
+    Comment = require('./models/comment'),
     seedDB = require('./seeds');
 
 // Seeding the DB
@@ -86,9 +87,30 @@ app.get('/campgrounds/:id/comments/new', (req, res) => {
         }
     });
 });
-
 // ***** RESTful nested route: CREATE route (GET, show item by id)
-
+app.post('/campgrounds/:id/comments', (req, res) => {
+    // res.send('This will be the Comments creation route.');
+    // Lookup campground using id
+    Campground.findById(req.params.id, (err, campground) => {
+        if(err) {
+            console.log('ERROR: ' + err);
+            res.redirect('/campgrounds');
+        } else {
+            // Create new comment
+            Comment.create(req.body.comment, (err, comment) => {
+                if(err) {
+                    console.log('ERROR: ' + err);
+                } else {
+                    // Connect new comment to campground
+                    campground.comments.push(comment);
+                    campground.save();
+                    //Redirect to campground show page
+                    res.redirect('/campgrounds/' + campground._id);
+                }
+            });
+        }
+    });
+});
 // Nested Routes (end) +++++++++++++++++
 // Routes (end) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

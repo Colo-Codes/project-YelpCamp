@@ -4,7 +4,7 @@
     <h1 class="text-center">Show a Campground</h1>
     
     <h1><%= campground.name %></h1>
-    <p><img src="<%= campground.image%>" alt=""></p>
+    <p><img src="<%= campground.image %>" alt=""></p>
     <p><%= campground.description %></p>
     <h4>Comments:</h4>
     <% campground.comments.forEach((comment) => { %>
@@ -12,6 +12,7 @@
             <strong><%= comment.author %></strong> - <%= comment.text %>
         </p>
     <% }) %>
+    <p><a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Add new comment</a></p>
     <p><a href="/campgrounds">Go back to Campgrounds list...</a></p>
 </div>
 
