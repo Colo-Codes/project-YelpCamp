@@ -17,6 +17,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Use "ejs" as view engine (so you don't have to write ".ejs" for file extensions):
 app.set('view engine', 'ejs');
 
+// Referencing the public directory (for CSS and JavaScript files). This is needed to reference the CSS file in other files.
+app.use(express.static(__dirname + '/public')); // The __dirname is the full directory path (it is used like this conventionally).
+
 // Routes (start) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.get('/', (req, res) => {
     // res.send('YelpCamp: It Works!');
