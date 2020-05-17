@@ -1,4 +1,4 @@
-<%- include("partials/header") %>
+<%- include("../partials/header") %>
 
 <div class="container mt-3">
     <header class="jumbotron">
@@ -16,7 +16,7 @@
             <% campgroundsPage.forEach((campsite) => { %>
                 <div class="col-md-3 col-sm-6"> <!-- How many columns the element is going to take -->
                     <div class="card mb-3">
-                        <img src="<%= campsite.image %>" alt="" class="card-img-top p-1">
+                        <img src="<%= campsite.image %>" alt="" class="card-img-top"> <!-- p-2 -->
                         <div class="card-body">
                             <h6><%= campsite.name %></h6>
                         </div>
@@ -29,4 +29,4 @@
     </div>
 </div>
 
-<%- include("partials/footer") %>
+<%- include("../partials/footer") %>
