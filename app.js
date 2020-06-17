@@ -3,9 +3,25 @@ const express = require('express'),
     app = express(),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
+    passport = require('passport'),
+    LocalStrategy = require('passport-local'),
     Campground = require('./models/campground'),
     Comment = require('./models/comment'),
+    User = require('./models/user'),
     seedDB = require('./seeds');
+
+// Passport configuration
+app.use(require('express-session')({
+    secret: 'Once again Rusty wins cutest dog!',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate())); // The User.authenticate() method comes with the passportLocalMongoose package.
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 // Seeding the DB
 seedDB();
@@ -37,8 +53,6 @@ app.get('/campgrounds', (req, res) => { // Using RESTful convention
                 res.render('campgrounds/index', {campgroundsPage:campgrounds});
             }
     });
-
-    
     // Using arrays: res.render('campgrounds', {campgroundsPage:campgrounds});
 });
 // ***** RESTful: NEW route (GET, show creation form)
@@ -80,7 +94,7 @@ app.get('/campgrounds/:id', (req, res) => { // Using RESTful convention
 });
 // Nested Routes (start) +++++++++++++++++
 // ***** RESTful nested route: NEW route (GET, show item by id)
-app.get('/campgrounds/:id/comments/new', (req, res) => {
+app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
     // res.send('This will be the Comments form.');
     Campground.findById(req.params.id, (err, campground) => {
         if(err) {
@@ -91,7 +105,7 @@ app.get('/campgrounds/:id/comments/new', (req, res) => {
     });
 });
 // ***** RESTful nested route: CREATE route (GET, show item by id)
-app.post('/campgrounds/:id/comments', (req, res) => {
+app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => { // Using the isLoggedIn function here prevents anyone from adding a comment through a POST request.
     // res.send('This will be the Comments creation route.');
     // Lookup campground using id
     Campground.findById(req.params.id, (err, campground) => {
@@ -115,7 +129,54 @@ app.post('/campgrounds/:id/comments', (req, res) => {
     });
 });
 // Nested Routes (end) +++++++++++++++++
+// Auth Routes (start) +++++++++++++++++
+// -    User Registration - Show register form
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+// -    User Registration - Handle Sing Up logic
+app.post('/register', (req, res) => {
+    //res.send('Signing you up...');
+    const newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, (err, user) => { // Instead of saving the raw passport to the database, it will sote the hashed password.
+        if(err){
+            console.log(err);
+            return res.render('register');
+        }
+        passport.authenticate('local')(req, res, function(){
+            res.redirect('/campgrounds');
+        });
+    });
+});
+// -    User Login - Show login form
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+// -    User Login - Handle login logic
+// app.post('/login', middleware, callback)
+app.post('/login', passport.authenticate('local', // The user is presumed to exist.
+    {
+        successRedirect: '/campgrounds',
+        failureRedirect: '/login'
+    }), (req, res) => {
+
+});
+// -    User Logout
+app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/campgrounds');
+});
+// Auth Routes (end) +++++++++++++++++++
 // Routes (end) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Functions
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()){
+        return next(); // Move on to render the new comment or campground.
+    }
+    res.redirect('/login');
+
+};
 
 // Running Node.js server
 app.listen('3000', () => {
