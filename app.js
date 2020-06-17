@@ -30,7 +30,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 // Seeding the DB
-seedDB();
+// seedDB();
 
 // Connecting to mongodb DB through mongoose
 mongoose.connect('mongodb://localhost/yelp_camp_db');
