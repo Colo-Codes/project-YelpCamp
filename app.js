@@ -36,6 +36,12 @@ app.set('view engine', 'ejs');
 // Referencing the public directory (for CSS and JavaScript files). This is needed to reference the CSS file in other files.
 app.use(express.static(__dirname + '/public')); // The __dirname is the full directory path (it is used like this conventionally).
 
+// This is a middleware - Sending user information to the header.ejs file, to be available on all routes
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user; // Anything that we put in the res.locals will be available in the templates.
+    next();
+});
+
 // Routes (start) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 app.get('/', (req, res) => {
     // res.send('YelpCamp: It Works!');
@@ -50,7 +56,7 @@ app.get('/campgrounds', (req, res) => { // Using RESTful convention
                 console.log('Error! ' + err);
             } else {
                 console.log('Found campgrounds! ' + campgrounds);
-                res.render('campgrounds/index', {campgroundsPage:campgrounds});
+                res.render('campgrounds/index', {campgroundsPage:campgrounds}); // Sending campground information to webpages.
             }
     });
     // Using arrays: res.render('campgrounds', {campgroundsPage:campgrounds});
