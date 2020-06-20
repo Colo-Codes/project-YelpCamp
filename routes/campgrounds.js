@@ -20,18 +20,22 @@ router.get('/', (req, res) => { // Using RESTful convention
 });
 // ***** RESTful: NEW route (GET, show creation form)
 // /campgrounds/new
-router.get('/new', (req, res) => { // Using RESTful convention
+router.get('/new', isLoggedIn, (req, res) => { // Using RESTful convention
     // res.send('Create a new camp!');
     res.render('campgrounds/new');
 });
 // ***** RESTful: CREATE route (POST, create an item)
 // /campgrounds
-router.post('/', (req, res) => { // Using RESTful convention
+router.post('/', isLoggedIn, (req, res) => { // Using RESTful convention
     // res.send('Posted!');
     const campgroundName = req.body.campgroundName;
     const campgroundImage = req.body.campgroundImage;
     const campgroundDescription = req.body.campgroundDescription;
-    const newCampGround = {name: campgroundName, image: campgroundImage, description: campgroundDescription};
+    const campgroundAuthor = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    const newCampGround = {name: campgroundName, image: campgroundImage, description: campgroundDescription, author: campgroundAuthor};
     // If using arrays: campgrounds.push(newCampGround);
     // Add a new campground to the DB
     Campground.create(newCampGround, function(err, newlyCreated){
@@ -58,5 +62,13 @@ router.get('/:id', (req, res) => { // Using RESTful convention
         }
     });
 });
+
+// Middleware
+function isLoggedIn(req, res, next) {
+    if(req.isAuthenticated()){
+        return next(); // Move on to render the new comment or campground.
+    }
+    res.redirect('/login');
+};
 
 module.exports = router;
