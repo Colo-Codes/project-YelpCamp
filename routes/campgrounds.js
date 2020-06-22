@@ -62,6 +62,46 @@ router.get('/:id', (req, res) => { // Using RESTful convention
         }
     });
 });
+// ***** RESTful: EDIT route (GET, edit item by id)
+// /campgrounds/:id/edit
+router.get('/:id/edit', (req, res) => {
+    //res.send('Edit campground route');
+    Campground.findById(req.params.id, (err, foundCampground) => {
+        if(err){
+            res.redirect('/campgrounds');
+        } else {
+            res.render('campgrounds/edit', {campground: foundCampground});
+        }
+    });
+});
+// ***** RESTful: UPDATE route (PUT, update item by id)
+// /campgrounds/:id
+router.put('/:id', (req, res) => {
+    // Find and update the correct campground item
+    Campground.findByIdAndUpdate(req.params.id, 
+        {
+            name: req.body.campgroundObject.campgroundName,
+            image: req.body.campgroundObject.campgroundImage,
+            description: req.body.campgroundObject.campgroundDescription
+        }, (err, updatedCampground) => {
+            if (err) {
+                res.redirect('/campgrounds');
+            } else {
+                res.redirect('/campgrounds/' + req.params.id);
+            }
+        });
+});
+// ***** RESTful: DESTROY route (DELETE, delete item by id)
+// /campgrounds/:id
+router.delete('/:id', (req, res) => {
+    //res.send('Deleting campground...');
+    Campground.findByIdAndRemove(req.params.id, (err) => {
+        if(err) {
+            console.log('Could not delete campground');
+        }
+        res.redirect('/campgrounds');
+    });
+});
 
 // Middleware
 function isLoggedIn(req, res, next) {

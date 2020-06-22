@@ -8,7 +8,8 @@ const express = require('express'),
     Campground = require('./models/campground'),
     Comment = require('./models/comment'),
     User = require('./models/user'),
-    seedDB = require('./seeds');
+    seedDB = require('./seeds'),
+    methodOverride = require('method-override');
 
 // Routes (after refactoring)
 const commentsRoutes = require('./routes/comments'),
@@ -47,6 +48,9 @@ app.use((req, res, next) => {
     res.locals.currentUser = req.user; // Anything that we put in the res.locals will be available in the templates.
     next();
 });
+
+// Overriding routes to edit campgrounds
+app.use(methodOverride('_method')); // Convention
 
 // Routes (start) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // All routes are imported.

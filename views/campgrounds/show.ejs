@@ -26,7 +26,11 @@
                     <p class="card-text" ><%= campground.description %></p>
                 </div>
                 <div class="card-footer">
-                    <div class="card border-info">
+                    <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit campground</a>
+                    <form id="inlineForm" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-sm btn-danger">Delete campground</button>
+                    </form>
+                    <div class="card border-info mt-3">
                         <div class="card-header">
                             <h4>Comments</h4>
                         </div>
