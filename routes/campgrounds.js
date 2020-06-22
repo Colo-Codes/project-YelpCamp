@@ -18,12 +18,14 @@ router.get('/', (req, res) => { // Using RESTful convention
     });
     // Using arrays: res.render('campgrounds', {campgroundsPage:campgrounds});
 });
+
 // ***** RESTful: NEW route (GET, show creation form)
 // /campgrounds/new
 router.get('/new', isLoggedIn, (req, res) => { // Using RESTful convention
     // res.send('Create a new camp!');
     res.render('campgrounds/new');
 });
+
 // ***** RESTful: CREATE route (POST, create an item)
 // /campgrounds
 router.post('/', isLoggedIn, (req, res) => { // Using RESTful convention
@@ -47,6 +49,7 @@ router.post('/', isLoggedIn, (req, res) => { // Using RESTful convention
         }
     });
 });
+
 // ***** RESTful: SHOW route (GET, show item by id)
 // /campgrounds/:id
 router.get('/:id', (req, res) => { // Using RESTful convention
@@ -62,21 +65,20 @@ router.get('/:id', (req, res) => { // Using RESTful convention
         }
     });
 });
+
 // ***** RESTful: EDIT route (GET, edit item by id)
 // /campgrounds/:id/edit
-router.get('/:id/edit', (req, res) => {
+router.get('/:id/edit', checkCampgroundOwnership, (req, res) => {
     //res.send('Edit campground route');
+    // Is user logged in and owns the campground?
     Campground.findById(req.params.id, (err, foundCampground) => {
-        if(err){
-            res.redirect('/campgrounds');
-        } else {
-            res.render('campgrounds/edit', {campground: foundCampground});
-        }
+        res.render('campgrounds/edit', {campground: foundCampground});
     });
 });
+
 // ***** RESTful: UPDATE route (PUT, update item by id)
 // /campgrounds/:id
-router.put('/:id', (req, res) => {
+router.put('/:id', checkCampgroundOwnership, (req, res) => {
     // Find and update the correct campground item
     Campground.findByIdAndUpdate(req.params.id, 
         {
@@ -91,9 +93,10 @@ router.put('/:id', (req, res) => {
             }
         });
 });
+
 // ***** RESTful: DESTROY route (DELETE, delete item by id)
 // /campgrounds/:id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', checkCampgroundOwnership, (req, res) => {
     //res.send('Deleting campground...');
     Campground.findByIdAndRemove(req.params.id, (err) => {
         if(err) {
@@ -110,5 +113,24 @@ function isLoggedIn(req, res, next) {
     }
     res.redirect('/login');
 };
+
+function checkCampgroundOwnership(req, res, next) {
+    if(req.isAuthenticated()){
+        Campground.findById(req.params.id, (err, foundCampground) => {
+            if(err){
+                res.redirect('back'); // This redirect the user to the previous page he/she was on.
+            } else {
+                // We could compare foundCampground.author.id with req.user._id using '===', but the former is an object and the later is a string.
+                if(foundCampground.author.id.equals(req.user._id)){
+                    next();
+                } else {
+                    res.redirect('back'); // This redirect the user to the previous page he/she was on.
+                }
+            }
+        });
+    } else {
+        res.redirect('back'); // This redirect the user to the previous page he/she was on.
+    }
+}
 
 module.exports = router;
