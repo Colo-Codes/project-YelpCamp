@@ -75,6 +75,19 @@ router.put('/:comment_id', (req, res) => {
         });
 });
 
+// ***** RESTful nested route: DESTROY route (DELETE, edit item by id)
+// /campgrounds/:id/comments/:comment_id/
+router.delete('/:comment_id', (req, res) => {
+    //res.send('This is the DESTROY route.');
+    Comment.findByIdAndRemove(req.params.comment_id, (err) => {
+        if(err) {
+            res.redirect('back');
+        } else {
+            res.redirect('/campgrounds/' + req.params.id);
+        }
+    });
+});
+
 // Nested Routes (end) +++++++++++++++++
 
 // Middleware

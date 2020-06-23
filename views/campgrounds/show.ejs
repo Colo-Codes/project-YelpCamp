@@ -28,7 +28,7 @@
                 <div class="card-footer">
                     <% if(currentUser && campground.author.id.equals(currentUser._id)) { %>
                         <a class="btn btn-sm btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit campground</a>
-                        <form id="inlineForm" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                        <form class="inlineForm" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
                             <button class="btn btn-sm btn-danger">Delete campground</button>
                         </form>
                     <% } %>
@@ -44,6 +44,9 @@
                                         <span class="float-right"><em>Date: 16 May 2020</em></span>
                                         <p><%= comment.text %></p>
                                         <a class="btn btn-sm btn-warning mb-2" href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit">Edit comment</a>
+                                        <form class="inlineForm" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST">
+                                            <button class="btn btn-sm btn-danger mb-2">Delete comment</button>
+                                        </form>
                                     </div>
                                 </div>
                             <% }) %>
