@@ -50,7 +50,7 @@ router.post('/', isLoggedIn, (req, res) => { // Using the isLoggedIn function he
 
 // ***** RESTful nested route: EDIT route (GET, edit item by id)
 // /campgrounds/:id/comments/:comment_id/edit
-router.get('/:comment_id/edit', (req, res) => {
+router.get('/:comment_id/edit', checkCommentOwnership, (req, res) => {
     //res.send('EDIT route for a comment.');
     Comment.findById(req.params.comment_id, (err, foundComment) => {
         if(err) {
@@ -63,7 +63,7 @@ router.get('/:comment_id/edit', (req, res) => {
 
 // ***** RESTful nested route: UPDATE route (PUT, edit item by id)
 // /campgrounds/:id/comments/:comment_id/
-router.put('/:comment_id', (req, res) => {
+router.put('/:comment_id', checkCommentOwnership, (req, res) => {
     //res.send('This is the updated comment.');
     // Find and update the correct comment item
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, updatedComment) => {
@@ -77,7 +77,7 @@ router.put('/:comment_id', (req, res) => {
 
 // ***** RESTful nested route: DESTROY route (DELETE, edit item by id)
 // /campgrounds/:id/comments/:comment_id/
-router.delete('/:comment_id', (req, res) => {
+router.delete('/:comment_id', checkCommentOwnership, (req, res) => {
     //res.send('This is the DESTROY route.');
     Comment.findByIdAndRemove(req.params.comment_id, (err) => {
         if(err) {
@@ -97,5 +97,24 @@ function isLoggedIn(req, res, next) {
     }
     res.redirect('/login');
 };
+
+function checkCommentOwnership(req, res, next) {
+    if(req.isAuthenticated()){
+        Comment.findById(req.params.comment_id, (err, foundComment) => {
+            if(err){
+                res.redirect('back'); // This redirect the user to the previous page he/she was on.
+            } else {
+                // We could compare foundComment.author.id with req.user._id using '===', but the former is an object and the later is a string.
+                if(foundComment.author.id.equals(req.user._id)){
+                    next();
+                } else {
+                    res.redirect('back'); // This redirect the user to the previous page he/she was on.
+                }
+            }
+        });
+    } else {
+        res.redirect('back'); // This redirect the user to the previous page he/she was on.
+    }
+}
 
 module.exports = router;
