@@ -1,7 +1,8 @@
 const express = require('express'),
     router = express.Router(),
     Campground = require('../models/campground'),
-    Comment = require('../models/comment');
+    Comment = require('../models/comment'),
+    middleware = require('../middleware'); // If we require a directory, it automatically requires the index.js file.
 
 // ***** RESTful: INDEX route (GET, show all items)
 // /campgrounds
@@ -21,14 +22,14 @@ router.get('/', (req, res) => { // Using RESTful convention
 
 // ***** RESTful: NEW route (GET, show creation form)
 // /campgrounds/new
-router.get('/new', isLoggedIn, (req, res) => { // Using RESTful convention
+router.get('/new', middleware.isLoggedIn, (req, res) => { // Using RESTful convention
     // res.send('Create a new camp!');
     res.render('campgrounds/new');
 });
 
 // ***** RESTful: CREATE route (POST, create an item)
 // /campgrounds
-router.post('/', isLoggedIn, (req, res) => { // Using RESTful convention
+router.post('/', middleware.isLoggedIn, (req, res) => { // Using RESTful convention
     // res.send('Posted!');
     const campgroundName = req.body.campgroundName;
     const campgroundImage = req.body.campgroundImage;
@@ -68,7 +69,7 @@ router.get('/:id', (req, res) => { // Using RESTful convention
 
 // ***** RESTful: EDIT route (GET, edit item by id)
 // /campgrounds/:id/edit
-router.get('/:id/edit', checkCampgroundOwnership, (req, res) => {
+router.get('/:id/edit', middleware.checkCampgroundOwnership, (req, res) => {
     //res.send('Edit campground route');
     // Is user logged in and owns the campground?
     Campground.findById(req.params.id, (err, foundCampground) => {
@@ -78,7 +79,7 @@ router.get('/:id/edit', checkCampgroundOwnership, (req, res) => {
 
 // ***** RESTful: UPDATE route (PUT, update item by id)
 // /campgrounds/:id
-router.put('/:id', checkCampgroundOwnership, (req, res) => {
+router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     // Find and update the correct campground item
     Campground.findByIdAndUpdate(req.params.id, 
         {
@@ -96,7 +97,7 @@ router.put('/:id', checkCampgroundOwnership, (req, res) => {
 
 // ***** RESTful: DESTROY route (DELETE, delete item by id)
 // /campgrounds/:id
-router.delete('/:id', checkCampgroundOwnership, (req, res) => {
+router.delete('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     //res.send('Deleting campground...');
     Campground.findByIdAndRemove(req.params.id, (err) => {
         if(err) {
@@ -105,32 +106,5 @@ router.delete('/:id', checkCampgroundOwnership, (req, res) => {
         res.redirect('/campgrounds');
     });
 });
-
-// Middleware
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()){
-        return next(); // Move on to render the new comment or campground.
-    }
-    res.redirect('/login');
-};
-
-function checkCampgroundOwnership(req, res, next) {
-    if(req.isAuthenticated()){
-        Campground.findById(req.params.id, (err, foundCampground) => {
-            if(err){
-                res.redirect('back'); // This redirect the user to the previous page he/she was on.
-            } else {
-                // We could compare foundCampground.author.id with req.user._id using '===', but the former is an object and the later is a string.
-                if(foundCampground.author.id.equals(req.user._id)){
-                    next();
-                } else {
-                    res.redirect('back'); // This redirect the user to the previous page he/she was on.
-                }
-            }
-        });
-    } else {
-        res.redirect('back'); // This redirect the user to the previous page he/she was on.
-    }
-}
 
 module.exports = router;
