@@ -12,6 +12,7 @@ router.get('/new', middleware.isLoggedIn, (req, res) => {
     // res.send('This will be the Comments form.');
     Campground.findById(req.params.id, (err, campground) => {
         if(err) {
+            req.flash('error', 'Something went wrong with the DataBase.'); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
             console.log('ERROR: ' + err);
         } else {
             res.render('comments/new', {campground: campground});
@@ -26,6 +27,7 @@ router.post('/', middleware.isLoggedIn, (req, res) => { // Using the isLoggedIn 
     // Lookup campground using id
     Campground.findById(req.params.id, (err, campground) => {
         if(err) {
+            req.flash('error', 'Something went wrong with the DataBase.'); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
             console.log('ERROR: ' + err);
             res.redirect('/campgrounds');
         } else {
@@ -41,6 +43,7 @@ router.post('/', middleware.isLoggedIn, (req, res) => { // Using the isLoggedIn 
                     // Connect new comment to campground
                     campground.comments.push(comment);
                     campground.save();
+                    req.flash('success', 'Comment sucessfully posted.'); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
                     //Redirect to campground show page
                     res.redirect('/campgrounds/' + campground._id);
                 }
@@ -82,8 +85,10 @@ router.delete('/:comment_id', middleware.checkCommentOwnership, (req, res) => {
     //res.send('This is the DESTROY route.');
     Comment.findByIdAndRemove(req.params.comment_id, (err) => {
         if(err) {
+            req.flash('error', 'Something went wrong with the DataBase.'); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
             res.redirect('back');
         } else {
+            req.flash('success', 'Comment sucessfully deleted.'); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
             res.redirect('/campgrounds/' + req.params.id);
         }
     });

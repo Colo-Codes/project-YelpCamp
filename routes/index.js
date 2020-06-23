@@ -19,10 +19,12 @@ router.post('/register', (req, res) => {
     const newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, (err, user) => { // Instead of saving the raw passport to the database, it will sote the hashed password.
         if(err){
+            req.flash('error', 'Something went wrong: ' + err.message); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
             console.log(err);
-            return res.render('register');
+            return res.redirect('/register');
         }
         passport.authenticate('local')(req, res, function(){
+            req.flash('success', 'Successfully registered as: ' + user.username); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
             res.redirect('/campgrounds');
         });
     });
@@ -43,16 +45,9 @@ router.post('/login', passport.authenticate('local', // The user is presumed to 
 // -    User Logout
 router.get('/logout', (req, res) => {
     req.logout();
+    req.flash('success', 'Logged you out.');
     res.redirect('/campgrounds');
 });
 // Auth Routes (end) +++++++++++++++++++
-
-// Middleware
-function isLoggedIn(req, res, next) {
-    if(req.isAuthenticated()){
-        return next(); // Move on to render the new comment or campground.
-    }
-    res.redirect('/login');
-};
 
 module.exports = router;

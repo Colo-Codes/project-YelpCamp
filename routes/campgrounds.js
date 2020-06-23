@@ -73,7 +73,11 @@ router.get('/:id/edit', middleware.checkCampgroundOwnership, (req, res) => {
     //res.send('Edit campground route');
     // Is user logged in and owns the campground?
     Campground.findById(req.params.id, (err, foundCampground) => {
-        res.render('campgrounds/edit', {campground: foundCampground});
+        if(err) {
+            req.flash('error', 'You don\'t have permission to do that.'); // This will be shown on the next page the user is redirected to. This is why it needs to be before the redirect.
+        } else {
+            res.render('campgrounds/edit', {campground: foundCampground});
+        }
     });
 });
 

@@ -5,6 +5,7 @@ const express = require('express'),
     mongoose = require('mongoose'),
     passport = require('passport'),
     LocalStrategy = require('passport-local'),
+    flash = require('connect-flash'),
     Campground = require('./models/campground'),
     Comment = require('./models/comment'),
     User = require('./models/user'),
@@ -16,6 +17,8 @@ const commentsRoutes = require('./routes/comments'),
     campgroundsRoutes = require('./routes/campgrounds'),
     indexRoutes = require('./routes/index');
 
+// Using flash messages
+app.use(flash()); // This needs to come before the passport usage in order to work properly.
 
 // Passport configuration
 app.use(require('express-session')({
@@ -28,7 +31,6 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate())); // The User.authenticate() method comes with the passportLocalMongoose package.
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
 
 // Seeding the DB
 // seedDB();
@@ -46,6 +48,8 @@ app.use(express.static(__dirname + '/public')); // The __dirname is the full dir
 // This is a middleware - Sending user information to the header.ejs file, to be available on all routes
 app.use((req, res, next) => {
     res.locals.currentUser = req.user; // Anything that we put in the res.locals will be available in the templates.
+    res.locals.error = req.flash('error'); // This will enable the possibility to display flash messages in all pages.
+    res.locals.success = req.flash('success'); // This will enable the possibility to display flash messages in all pages.
     next();
 });
 
