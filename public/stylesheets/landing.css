@@ -1,0 +1,101 @@
+body {
+    background-color: #000;
+}
+
+#landing-header {
+    z-index: 1;
+    position: relative; /* Needed for z-index to work. If it is "static", the z-index will be ignored. */
+    text-align: center;
+    padding-top: 40vh; /* ViewHight */
+}
+#landing-header h1 {
+    color: #fff;
+    text-shadow: 5px 5px 8px #000;
+}
+#landing-header .btn {
+    box-shadow: 2px 2px 8px #000;
+}
+#trademark {
+    text-align: center;
+    padding-top: 10vh; /* ViewHight */
+}
+
+.slideshow { 
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.slideshow li { 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: cover; /* This will allow the images to take the entire page. */
+    background-position: 50% 50%; /* Centered images in the page. */
+    background-repeat: no-repeat;
+    opacity: 0; /* Images start faded out. */
+    z-index: 0;
+    animation: imageAnimation 50s linear infinite; /* This is the fading-out fading-in animation. */
+}
+.slideshow li:nth-child(1) { 
+    background-image: url(http://i.imgur.com/K3mPv14.jpg) 
+}
+.slideshow li:nth-child(2) { 
+    background-image: url(http://i.imgur.com/SBEmFpv.jpg);
+    animation-delay: 10s; 
+}
+.slideshow li:nth-child(3) { 
+    background-image: url(http://i.imgur.com/emvhOnb.jpg);
+    animation-delay: 20s; 
+}
+.slideshow li:nth-child(4) { 
+    background-image: url(http://i.imgur.com/2LSMCmJ.jpg);
+    animation-delay: 30s; 
+}
+.slideshow li:nth-child(5) { 
+    background-image: url(http://i.imgur.com/TVGe0Ef.jpg);
+    animation-delay: 40s; 
+}
+
+/* Now we can create the keyframes for the animation: */
+@keyframes imageAnimation { 
+    0% { 
+        opacity: 0; 
+        animation-timing-function: ease-in;
+    }
+    10% {
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+    20% {
+        opacity: 1;
+    }
+    30% {
+        opacity: 0;
+    }
+}
+/*
+The animation will be named imageAnimation, which matches with the value from our animation property in the .slideshow (unordered list) rule.
+From 0% to 10% (the beginning of our animation) the list item begins changing it's opacity from 0 to 1 (invisible to visible).
+the animation-timing-function is set to ease-in at 0% and ease-out and 10%, this makes for a more smooth fade-in.
+The list item's opacity then stays at 1 until it reaches 20% at which point it fades back out, reaching 0 at 30% and staying at 0 for the remainder of the animation.
+If we have 5 background images visible for 5 seconds each, then the time it takes to fade the image in and 
+keep it visible is 10 seconds with a 5 second crossfade/fadeout into the next image; The entire animation cycle for all 5 images takes 50 seconds total.
+100% divided by 5 is 20% so each image's fadein and visibility should last 20% of the cycle; half of 20% is 10%, that is why our fade in is from 0% to 10%, 
+then we keep it visible until 20% is reached and begin the fadeout from 20% to 30%, the 5 second fadeout overlaps the next image's 5 second fadein, 
+which is what creates the crossfade effect.
+*/
+
+/* Older browser support - .no-cssanimations class added by modernizr */
+.no-cssanimations .slideshow li {
+    opacity: 1;
+}
+
+/* TUTORIAL: https://github.com/nax3t/background-slider */
