@@ -38,7 +38,8 @@ router.post('/', middleware.isLoggedIn, (req, res) => { // Using RESTful convent
         id: req.user._id,
         username: req.user.username
     };
-    const newCampGround = {name: campgroundName, image: campgroundImage, description: campgroundDescription, author: campgroundAuthor};
+    const campgroundPrice = req.body.campgroundPrice;
+    const newCampGround = {name: campgroundName, image: campgroundImage, description: campgroundDescription, author: campgroundAuthor, price: campgroundPrice};
     // If using arrays: campgrounds.push(newCampGround);
     // Add a new campground to the DB
     Campground.create(newCampGround, function(err, newlyCreated){
@@ -89,7 +90,8 @@ router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
         {
             name: req.body.campgroundObject.campgroundName,
             image: req.body.campgroundObject.campgroundImage,
-            description: req.body.campgroundObject.campgroundDescription
+            description: req.body.campgroundObject.campgroundDescription,
+            price: req.body.campgroundObject.campgroundPrice
         }, (err, updatedCampground) => {
             if (err) {
                 res.redirect('/campgrounds');
