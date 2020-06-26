@@ -5,3 +5,8 @@
 .inlineForm {
     display: inline;
 }
+
+#trademark {
+    text-align: center;
+    padding-top: 10vh; /* ViewHight */
+}
