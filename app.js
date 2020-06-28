@@ -63,7 +63,10 @@ app.use('/campgrounds/', campgroundsRoutes);
 app.use('/campgrounds/:id/comments', commentsRoutes);
 // Routes (end) ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Running Node.js server
-app.listen('3000', () => {
-    console.log('YelpCamp server running... (port 3000)');
+// Running Node.js server, the Heroku way (!)
+app.listen(process.env.PORT || '3000', () => {
+    console.log('YelpCamp server running... (local port 3000)');
 });
+// app.listen('3000', () => {
+//     console.log('YelpCamp server running... (port 3000)');
+// });
