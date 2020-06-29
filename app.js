@@ -36,7 +36,9 @@ passport.deserializeUser(User.deserializeUser());
 // seedDB();
 
 // Connecting to mongodb DB through mongoose
-mongoose.connect('mongodb://localhost/yelp_camp_db');
+//mongoose.connect('mongodb://localhost/yelp_camp_db'); // This is for the local MongoDB
+mongoose.connect('mongodb+srv://darthcolo:aA123654789@cluster0-6ykft.mongodb.net/yelp_camp_db?retryWrites=true&w=majority');// This is for the cloud MongoDB Atlas
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 // Use "ejs" as view engine (so you don't have to write ".ejs" for file extensions):
