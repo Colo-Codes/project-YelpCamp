@@ -37,7 +37,7 @@ passport.deserializeUser(User.deserializeUser());
 
 // Connecting to mongodb DB through mongoose
 //mongoose.connect('mongodb://localhost/yelp_camp_db'); // This is for the local MongoDB
-mongoose.connect('mongodb+srv://darthcolo:aA123654789@cluster0-6ykft.mongodb.net/yelp_camp_db?retryWrites=true&w=majority');// This is for the cloud MongoDB Atlas
+mongoose.connect('mongodb+srv://darthcolo:Password123!@cluster0-6ykft.mongodb.net/yelp_camp_db?retryWrites=true&w=majority');// This is for the cloud MongoDB Atlas
 
 
 app.use(bodyParser.urlencoded({extended: true}));
